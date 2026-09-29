@@ -12,7 +12,7 @@ datasource db {
   provider = "postgresql"
 }
 
-// penmaan models pascal case
+// penamaan models pascal case
 model User {
   id         Int       @id @default(autoincrement())
   nama       String
