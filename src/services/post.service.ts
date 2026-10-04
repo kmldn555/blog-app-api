@@ -42,7 +42,10 @@ export const getPostBySlugService = async (slug: string) => {
   return blog;
 };
 
-export const createPostService = async (body: CreatePostSchema) => {
+export const createPostService = async (
+  body: CreatePostSchema,
+  userId: number,
+) => {
   const blog = await prisma.post.findUnique({
     where: { title: body.title },
   });
@@ -61,7 +64,7 @@ export const createPostService = async (body: CreatePostSchema) => {
       slug: slug,
       content: body.content,
       thumbnail: body.thumbnail,
-      userId: body.userId,
+      userId: userId,
     },
   });
 

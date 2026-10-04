@@ -5,7 +5,6 @@ export const createPostSchema = z.object({
   description: z.string().min(6),
   category: z.string().min(1),
   thumbnail: z.string().min(1),
-  userId: z.number(),
   content: z.string().min(1),
 });
 
