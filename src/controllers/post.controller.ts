@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { getPostBySlugService, getPostService } from "../services/post.service.js";
+import { createPostService, getPostBySlugService, getPostService } from "../services/post.service.js";
 
 
 export const getPostsController = async (req: Request, res: Response) => {
@@ -18,5 +18,10 @@ export const getPostsController = async (req: Request, res: Response) => {
 export const getPostBySlugController = async (req: Request, res: Response) => {
   const slug = String(req.params.slug);
   const result = await getPostBySlugService(slug);
+  res.status(200).send(result);
+};
+
+export const createPostController = async (req: Request, res: Response) => {
+  const result = await createPostService(req.body);
   res.status(200).send(result);
 };
