@@ -1,6 +1,9 @@
 import { Request, Response } from "express";
-import { createPostService, getPostBySlugService, getPostService } from "../services/post.service.js";
-
+import {
+  createPostService,
+  getPostBySlugService,
+  getPostService,
+} from "../services/post.service.js";
 
 export const getPostsController = async (req: Request, res: Response) => {
   const query = {
@@ -23,6 +26,10 @@ export const getPostBySlugController = async (req: Request, res: Response) => {
 
 export const createPostController = async (req: Request, res: Response) => {
   const userId = res.locals.user.id; // cara ambil userID didalam token
-  const result = await createPostService(req.body, userId);
+
+  const files = req.files as { [fieldname: string]: Express.Multer.File[] };
+  const thumbnail = files.thumbnail?.[0];
+
+  const result = await createPostService(req.body, thumbnail, userId);
   res.status(200).send(result);
 };
