@@ -2,9 +2,15 @@ import { User } from "../../generated/prisma/client.js";
 import { prisma } from "../lib/prisma.js";
 import { ApiError } from "../utils/api-error.js";
 import argon from "argon2";
-import { ForgotPasswordSchema, LoginSchema, RegisterSchema } from "../validators/auth.validator.js";
+import {
+  ForgotPasswordSchema,
+  LoginSchema,
+  RegisterSchema,
+  ResetPasswordSchema,
+} from "../validators/auth.validator.js";
 import jwt from "jsonwebtoken";
 import { sendMail } from "../lib/mail.js";
+import { getUserService } from "./user.service.js";
 
 export const registerService = async (body: RegisterSchema) => {
   // 1. cek dulu emailnya sudah kepake atau belom
@@ -34,9 +40,9 @@ export const registerService = async (body: RegisterSchema) => {
     to: body.email,
     subject: "Welcome to Blog App",
     templateName: "welcome.hbs",
-    context:  {
+    context: {
       nama: body.nama,
-    }
+    },
   });
 
   // 6. return success
@@ -104,4 +110,20 @@ export const forgotPasswordService = async (body: ForgotPasswordSchema) => {
   });
 
   return { message: "Send email success" };
+};
+
+export const resetPasswordService = async (
+  body: ResetPasswordSchema,
+  userId: number,
+) => {
+  await getUserService(userId);
+
+  const hashedPassword = await argon.hash(body.password);
+
+  await prisma.user.update({
+    where: { id: userId },
+    data: { password: hashedPassword },
+  });
+
+  return { message: "Reset email success" };
 };
