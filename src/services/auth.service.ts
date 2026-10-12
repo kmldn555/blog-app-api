@@ -4,6 +4,13 @@ import { ApiError } from "../utils/api-error.js";
 import argon from "argon2";
 import {
   ForgotPasswordSchema,
+  GoogleSchema,
+  LoginSchema,
+  RegisterSchema,
+} from "../validators/auth.validator.js";
+import jwt from "jsonwebtoken";
+import { sendMail } from "../lib/mail.js";
+import axios from "axios";
   LoginSchema,
   RegisterSchema,
   ResetPasswordSchema,
@@ -112,6 +119,56 @@ export const forgotPasswordService = async (body: ForgotPasswordSchema) => {
   return { message: "Send email success" };
 };
 
+export const googleService = async (body: GoogleSchema) => {
+  const response = await axios.get(
+    "https://www.googleapis.com/oauth2/v3/userinfo",
+    {
+      headers: {
+        Authorization: `Bearer ${body.accessToken}`,
+      },
+    },
+  );
+
+  let user = await prisma.user.findUnique({
+    where: { email: response.data.email },
+  });
+
+  //kalo emailnya udah ada dan providernya bukan google, throw error
+  if (!!user && user.provider !== "GOOGLE") {
+    throw new ApiError("Please login using credentials", 400);
+  }
+
+  // kalo emailnya belum kepake sama sekali
+  if (!user) {
+    user = await prisma.user.create({
+      data: {
+        nama: response.data.name,
+        email: response.data.email,
+        password: "",
+        profilePic: response.data.picture,
+        provider: "GOOGLE",
+      },
+    });
+  }
+  // generate accessToken (jwt)
+  const payload = { id: user.id, role: user.role };
+  const accessToken = jwt.sign(payload, process.env.JWT_SECRET!, {
+    expiresIn: "1d",
+  });
+
+  // return message login success + data user + access tokennya
+  return {
+    message: "Login success",
+    accessToken: accessToken,
+    user: {
+      id: user.id,
+      nama: user.nama,
+      email: user.email,
+      role: user.role,
+      profilePic: user.profilePic,
+    },
+  };
+};
 export const resetPasswordService = async (
   body: ResetPasswordSchema,
   userId: number,

@@ -19,6 +19,7 @@ model User {
   email      String    @unique
   password   String
   role       UserRole  @default(USER)
+  provider   Provider  @default(CREDENTIALS)
   profilePic String?
   deletedAt  DateTime?
   createdAt  DateTime  @default(now())
@@ -27,6 +28,11 @@ model User {
   posts Post[]
 
   @@map("users") //rename table di database
+}
+
+enum Provider {
+  CREDENTIALS
+  GOOGLE
 }
 
 enum UserRole {
@@ -51,4 +57,3 @@ model Post {
 
   @@map("posts")
 }
-

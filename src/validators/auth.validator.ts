@@ -27,6 +27,11 @@ export const forgotPasswordSchema = z.object({
   email: z.email(),
 });
 
+export const googleSchema = z.object({
+  accessToken: z.string().min(1),
+});
+
+export type GoogleSchema = z.infer<typeof googleSchema>;
 export const resetPasswordSchema = z.object({
   password: z
     .string()
