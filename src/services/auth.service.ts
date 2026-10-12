@@ -11,6 +11,13 @@ import {
 import jwt from "jsonwebtoken";
 import { sendMail } from "../lib/mail.js";
 import axios from "axios";
+  LoginSchema,
+  RegisterSchema,
+  ResetPasswordSchema,
+} from "../validators/auth.validator.js";
+import jwt from "jsonwebtoken";
+import { sendMail } from "../lib/mail.js";
+import { getUserService } from "./user.service.js";
 
 export const registerService = async (body: RegisterSchema) => {
   // 1. cek dulu emailnya sudah kepake atau belom
@@ -161,4 +168,19 @@ export const googleService = async (body: GoogleSchema) => {
       profilePic: user.profilePic,
     },
   };
+};
+export const resetPasswordService = async (
+  body: ResetPasswordSchema,
+  userId: number,
+) => {
+  await getUserService(userId);
+
+  const hashedPassword = await argon.hash(body.password);
+
+  await prisma.user.update({
+    where: { id: userId },
+    data: { password: hashedPassword },
+  });
+
+  return { message: "Reset email success" };
 };
