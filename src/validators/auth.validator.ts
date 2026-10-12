@@ -27,11 +27,6 @@ export const forgotPasswordSchema = z.object({
   email: z.email(),
 });
 
-export const googleSchema = z.object({
-  accessToken: z.string().min(1),
-});
-
-export type GoogleSchema = z.infer<typeof googleSchema>;
 export const resetPasswordSchema = z.object({
   password: z
     .string()
@@ -48,8 +43,12 @@ export const resetPasswordSchema = z.object({
     }),
 });
 
+export const googleSchema = z.object({
+  accessToken: z.string().min(1),
+});
 
-export type RegisterSchema = z.infer<typeof registerSchema>;
-export type LoginSchema = z.infer<typeof loginSchema>;
-export type ForgotPasswordSchema = z.infer<typeof forgotPasswordSchema>;
+export type GoogleSchema = z.infer<typeof googleSchema>;
 export type ResetPasswordSchema = z.infer<typeof resetPasswordSchema>;
+export type ForgotPasswordSchema = z.infer<typeof forgotPasswordSchema>;
+export type LoginSchema = z.infer<typeof loginSchema>;
+export type RegisterSchema = z.infer<typeof registerSchema>;
