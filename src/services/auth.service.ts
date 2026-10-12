@@ -2,6 +2,7 @@ import { prisma } from "../lib/prisma.js";
 import { ApiError } from "../utils/api-error.js";
 import argon from "argon2";
 import {
+  ChangePasswordSchema,
   ForgotPasswordSchema,
   GoogleSchema,
   LoginSchema,
@@ -177,4 +178,29 @@ export const resetPasswordService = async (
   });
 
   return { message: "Reset email success" };
+};
+
+export const changePasswordService = async (
+  body: ChangePasswordSchema,
+  userId: number,
+) => {
+  const user = await prisma.user.findUnique({
+    where:{id: userId}
+  })
+
+  if (!user){throw new ApiError("User not found",404)}
+  const isPassMatch = await argon.verify(user.password, body.oldPassword);
+
+  if(!isPassMatch){
+    throw new ApiError("Pasword do not match", 400)
+  }
+
+  const newPassword = await argon.hash(body.newPassword);
+
+  await prisma.user.update({
+    where:{id: userId},
+    data: {password: newPassword}
+  })
+
+  return { message: "change password success" };
 };

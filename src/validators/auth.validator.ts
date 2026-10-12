@@ -47,6 +47,24 @@ export const googleSchema = z.object({
   accessToken: z.string().min(1),
 });
 
+export const changePasswordSchema = z.object({
+  oldPassword: z.string().min(1),
+  newPassword: z
+    .string()
+    .min(6, { error: "Password must be at least 6 character" })
+    .regex(/[A-Z]/, {
+      message: "Password must contain at least one uppercase letter",
+    })
+    .regex(/[a-z]/, {
+      message: "Password must contain at least one lowercase letter",
+    })
+    .regex(/[0-9]/, { message: "Password must contain at least one number" })
+    .regex(/[^A-Za-z0-9]/, {
+      message: "Password must contain at least one special character",
+    }),
+});
+
+export type ChangePasswordSchema = z.infer<typeof changePasswordSchema>;
 export type GoogleSchema = z.infer<typeof googleSchema>;
 export type ResetPasswordSchema = z.infer<typeof resetPasswordSchema>;
 export type ForgotPasswordSchema = z.infer<typeof forgotPasswordSchema>;
