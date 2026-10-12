@@ -1,4 +1,3 @@
-import { User } from "../../generated/prisma/client.js";
 import { prisma } from "../lib/prisma.js";
 import { ApiError } from "../utils/api-error.js";
 import argon from "argon2";
@@ -7,14 +6,9 @@ import {
   GoogleSchema,
   LoginSchema,
   RegisterSchema,
-} from "../validators/auth.validator.js";
-import jwt from "jsonwebtoken";
-import { sendMail } from "../lib/mail.js";
-import axios from "axios";
-  LoginSchema,
-  RegisterSchema,
   ResetPasswordSchema,
 } from "../validators/auth.validator.js";
+import axios from "axios";
 import jwt from "jsonwebtoken";
 import { sendMail } from "../lib/mail.js";
 import { getUserService } from "./user.service.js";

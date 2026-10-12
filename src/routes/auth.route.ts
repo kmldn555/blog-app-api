@@ -25,12 +25,12 @@ authRoutes.post(
   validate(forgotPasswordSchema),
   forgotPasswordController,
 );
-authRoutes.post("/google", validate(googleSchema), googleController);
 authRoutes.post(
   "/reset-password",
   verifyToken(process.env.JWT_SECRET_RESET!),
   validate(resetPasswordSchema),
   resetPasswordController,
 );
+authRoutes.post("/google", validate(googleSchema), googleController);
 
 export { authRoutes };

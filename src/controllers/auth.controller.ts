@@ -1,6 +1,11 @@
 import { Request, Response } from "express";
-import { forgotPasswordService, googleService, loginService, registerService } from "../services/auth.service.js";
-import { forgotPasswordService, loginService, registerService, resetPasswordService } from "../services/auth.service.js";
+import {
+  forgotPasswordService,
+  googleService,
+  loginService,
+  registerService,
+  resetPasswordService,
+} from "../services/auth.service.js";
 
 export const registerController = async (req: Request, res: Response) => {
   const result = await registerService(req.body);
@@ -19,6 +24,9 @@ export const forgotPasswordController = async (req: Request, res: Response) => {
 
 export const googleController = async (req: Request, res: Response) => {
   const result = await googleService(req.body);
+  res.status(200).send(result);
+};
+
 export const resetPasswordController = async (req: Request, res: Response) => {
   const userId = res.locals.user.id;
   const result = await resetPasswordService(req.body, userId);
