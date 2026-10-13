@@ -4,13 +4,16 @@ import { userRoutes } from "./routes/user.route.js";
 import { postRoutes } from "./routes/post.route.js";
 import cors from "cors";
 import { authRoutes } from "./routes/auth.route.js";
+import cookieParser from "cookie-parser";
+import { corsOptions } from "./config/cors.js";
 
 const PORT = 8000;
 
 const app = express();
 
-app.use(cors());
+app.use(cors(corsOptions));
 app.use(express.json()); // agar bisa nerima request body
+app.use(cookieParser());
 
 app.get("/api", (req, res) => res.status(200).send("Welcome to my API"));
 

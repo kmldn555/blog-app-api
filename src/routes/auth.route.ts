@@ -4,6 +4,8 @@ import {
   forgotPasswordController,
   googleController,
   loginController,
+  logoutController,
+  refreshController,
   registerController,
   resetPasswordController,
 } from "../controllers/auth.controller.js";
@@ -40,5 +42,8 @@ authRoutes.post(
   validate(changePasswordSchema),
   changePasswordController,
 );
+
+authRoutes.post("/refresh", refreshController);
+authRoutes.post("/logout", logoutController);
 
 export { authRoutes };
