@@ -4,9 +4,12 @@ import {
   forgotPasswordService,
   googleService,
   loginService,
+  logoutService,
+  refreshService,
   registerService,
   resetPasswordService,
 } from "../services/auth.service.js";
+import { cookieOptions } from "../config/cookie.js";
 
 export const registerController = async (req: Request, res: Response) => {
   const result = await registerService(req.body);
@@ -15,7 +18,14 @@ export const registerController = async (req: Request, res: Response) => {
 
 export const loginController = async (req: Request, res: Response) => {
   const result = await loginService(req.body);
-  res.status(200).send(result);
+
+  res.cookie("accessToken", result.accessToken, cookieOptions);
+  res.cookie("refreshToken", result.refreshToken, cookieOptions);
+
+  res.status(200).send({
+    message: result.message,
+    user: result.user,
+  });
 };
 
 export const forgotPasswordController = async (req: Request, res: Response) => {
@@ -37,5 +47,22 @@ export const resetPasswordController = async (req: Request, res: Response) => {
 export const changePasswordController = async (req: Request, res: Response) => {
   const userId = res.locals.user.id;
   const result = await changePasswordService(req.body, userId);
+  res.status(200).send(result);
+};
+
+export const refreshController = async (req: Request, res: Response) => {
+  const result = await refreshService(req.cookies.refreshToken);
+
+  res.cookie("accessToken", result.accessToken, cookieOptions);
+
+  res.status(200).send({ message: "refresh success" });
+};
+
+export const logoutController = async (req: Request, res: Response) => {
+  const result = await logoutService(req.cookies.refreshToken);
+
+  res.clearCookie("accessToken", cookieOptions);
+  res.clearCookie("refreshToken", cookieOptions);
+
   res.status(200).send(result);
 };
