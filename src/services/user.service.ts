@@ -1,13 +1,12 @@
 import { Prisma, User } from "../../generated/prisma/client.js";
-import { SortOrder } from "../../generated/prisma/internal/prismaNamespace.js";
 import { prisma } from "../lib/prisma.js";
 import { ApiError } from "../utils/api-error.js";
 
 interface GetUserQuery {
   page: number;
   take: number;
-  sortOrder: string; //asc or des
-  sortBy: string; //
+  sortOrder: string; // asc or des
+  sortBy: string; // based on column
   search: string;
 }
 
@@ -60,12 +59,12 @@ export const createUserService = async (body: User) => {
   await prisma.$transaction(async (tx) => {
     const newUser = await tx.user.create({ data: body });
 
-    await tx.post.create({
-      data: {
-        content: "lorem ipsum",
-        userId: newUser.id,
-      },
-    });
+    // await tx.post.create({
+    //   data: {
+    //     content: "lorem ipsum",
+    //     userId: newUser.id,
+    //   },
+    // });
   });
 
   return { message: "create user success" };
