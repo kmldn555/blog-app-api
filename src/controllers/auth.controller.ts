@@ -35,7 +35,13 @@ export const forgotPasswordController = async (req: Request, res: Response) => {
 
 export const googleController = async (req: Request, res: Response) => {
   const result = await googleService(req.body);
-  res.status(200).send(result);
+  res.cookie("accessToken", result.accessToken, cookieOptions);
+  res.cookie("refreshToken", result.refreshToken, cookieOptions);
+
+  res.status(200).send({
+    message: result.message,
+    user: result.user,
+  });
 };
 
 export const resetPasswordController = async (req: Request, res: Response) => {

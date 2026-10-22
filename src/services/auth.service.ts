@@ -162,13 +162,27 @@ export const googleService = async (body: GoogleSchema) => {
   // generate accessToken (jwt)
   const payload = { id: user.id, role: user.role };
   const accessToken = jwt.sign(payload, process.env.JWT_SECRET!, {
-    expiresIn: "1d",
+    expiresIn: "15m",
+  });
+
+  // 6. generate refresh token
+  const refreshToken = jwt.sign(payload, process.env.JWT_SECRET_REFRESH!, {
+    expiresIn: "7d",
+  });
+
+  await prisma.refreshToken.create({
+    data: {
+      token: refreshToken,
+      userId: user.id,
+      expiredAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days
+    },
   });
 
   // return message login success + data user + access tokennya
   return {
     message: "Login success",
     accessToken: accessToken,
+    refreshToken: refreshToken,
     user: {
       id: user.id,
       nama: user.nama,
