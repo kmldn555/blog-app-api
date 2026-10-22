@@ -2,7 +2,7 @@ import cron from "node-cron";
 import { prisma } from "../lib/prisma.js";
 
 export const expiredTransactionCron = () => {
-  cron.schedule("* * * * * *", async () => {
+  cron.schedule("* * * * *", async () => {
     // 1. cari dulu transaksi yang expireAt nya sudah melebihi bow dan statusnya masih WAITING_FOR_PAYMENT
     const expiredTransactions = await prisma.transaction.findMany({
       where: {
